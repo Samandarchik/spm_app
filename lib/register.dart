@@ -179,10 +179,10 @@ class _RegisterUiState extends State<RegisterUi> {
                             ? const SizedBox(
                                 height: 20,
                                 width: 20,
-                                child: CircularProgressIndicator(
-                                  color: Colors.white,
-                                  strokeWidth: 2,
-                                ),
+                                child: CircularProgressIndicator
+                                    .adaptive(
+                                      strokeWidth: 2,
+                                    ),
                               )
                             : const Text(
                                 'Register',
@@ -210,8 +210,7 @@ class _RegisterUiState extends State<RegisterUi> {
                             ? const SizedBox(
                                 height: 20,
                                 width: 20,
-                                child: CircularProgressIndicator(
-                                  color: Colors.white,
+                                child: CircularProgressIndicator.adaptive(
                                   strokeWidth: 2,
                                 ),
                               )

@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  static const String baseUrl = 'http://0.0.0.0:8050';
+  static const String baseUrl = 'https://quiz.monebakeryuz.uz';
 
   static Future<Map<String, dynamic>> login(
     String username,

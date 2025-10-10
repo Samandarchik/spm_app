@@ -274,7 +274,7 @@
 //           // Users List
 //           Expanded(
 //             child: _isLoading
-//                 ? const Center(child: CircularProgressIndicator())
+//                 ? const Center(child: CircularProgressIndicator.adaptive())
 //                 : _errorMessage.isNotEmpty
 //                     ? _buildErrorWidget()
 //                     : _filteredUsers.isEmpty

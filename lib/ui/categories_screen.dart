@@ -96,7 +96,9 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
       body: SafeArea(
         child: _isLoading
             ? const Center(
-                child: CircularProgressIndicator(color: Color(0xff150856)),
+                child: CircularProgressIndicator.adaptive(
+               
+                ),
               )
             : _errorMessage != null
             ? Center(

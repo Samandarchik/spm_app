@@ -4,6 +4,7 @@ import 'package:spm_app/models/question.dart';
 import 'package:spm_app/register.dart';
 import 'package:spm_app/service/api_service.dart';
 import 'package:spm_app/service/storage_service.dart';
+
 // Quiz Screen
 class QuizScreen extends StatefulWidget {
   final CategoryModel category;
@@ -113,9 +114,7 @@ class _QuizScreenState extends State<QuizScreen> {
     if (_isLoading) {
       return Scaffold(
         backgroundColor: Colors.yellow,
-        body: const Center(
-          child: CircularProgressIndicator(color: Color(0xff150856)),
-        ),
+        body: const Center(child: CircularProgressIndicator.adaptive()),
       );
     }
 
