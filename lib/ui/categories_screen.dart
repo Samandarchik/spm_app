@@ -4,6 +4,7 @@ import 'package:spm_app/register.dart';
 import 'package:spm_app/service/api_service.dart';
 import 'package:spm_app/service/storage_service.dart';
 import 'package:spm_app/ui/quiz_screen.dart';
+import 'package:spm_app/ui/rezume_page.dart';
 
 // Categories Screen
 class CategoriesScreen extends StatefulWidget {
@@ -85,6 +86,9 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
           style: const TextStyle(color: Color(0xff150856)),
         ),
         actions: [
+          IconButton(onPressed: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context)=>RezumePage()));
+          }, icon: Icon(Icons.person)),
           IconButton(
             onPressed: _logout,
             icon: const Icon(Icons.logout, color: Color(0xff150856)),

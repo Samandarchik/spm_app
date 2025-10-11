@@ -14,7 +14,7 @@ class QuizApp extends StatelessWidget {
     return MaterialApp(
       title: 'Quiz Mobile App',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(primarySwatch: Colors.yellow, fontFamily: 'Arial'),
+      theme: ThemeData(primarySwatch: Colors.yellow, fontFamily: 'Arial',scaffoldBackgroundColor: Colors.yellow,appBarTheme: AppBarThemeData(backgroundColor: Colors.yellow)),
       home: const SplashScreen(),
     );
   }
