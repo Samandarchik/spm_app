@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:spm_app/ui/splash_screen.dart';
+import 'package:spm_app/main/user/ui/splash_screen.dart';
 
 void main() {
   runApp(const QuizApp());
@@ -14,7 +14,11 @@ class QuizApp extends StatelessWidget {
     return MaterialApp(
       title: 'Quiz Mobile App',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(primarySwatch: Colors.yellow, fontFamily: 'Arial',scaffoldBackgroundColor: Colors.yellow,appBarTheme: AppBarThemeData(backgroundColor: Colors.yellow)),
+      theme: ThemeData(
+        fontFamily: 'Arial',
+        scaffoldBackgroundColor: Color(0xfffdc109),
+        appBarTheme: AppBarThemeData(backgroundColor: Color(0xfffdc109)),
+      ),
       home: const SplashScreen(),
     );
   }

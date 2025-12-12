@@ -1,10 +1,10 @@
 // API Service
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:spm_app/main/service/storage_service.dart';
 
 class ApiService {
-  static const String baseUrl = 'https://quiz.monebakeryuz.uz';
-
+  static const String baseUrl = 'http://0.0.0.0:8050';
   static Future<Map<String, dynamic>> login(
     String username,
     String password,
@@ -14,8 +14,8 @@ class ApiService {
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'username': username, 'password': password}),
     );
-    print(response.body);
     if (response.statusCode == 200 || response.statusCode == 201) {
+      StorageService.saveUser(jsonDecode(response.body)['user']);
       return jsonDecode(response.body);
     } else {
       throw Exception('Login xatosi: ${response.body}');
@@ -35,7 +35,6 @@ class ApiService {
         "role": "register",
       }),
     );
-    print(response.body);
     if (response.statusCode == 200 || response.statusCode == 201) {
       return jsonDecode(response.body);
     } else {
@@ -48,7 +47,6 @@ class ApiService {
       Uri.parse('$baseUrl/api/categories'),
       headers: {'Authorization': 'Bearer $token'},
     );
-    print(response.body);
     if (response.statusCode == 200) {
       return jsonDecode(utf8.decode(response.bodyBytes));
     } else {
@@ -94,9 +92,30 @@ class ApiService {
     );
 
     if (response.statusCode == 200) {
+      print(response.body);
       return jsonDecode(utf8.decode(response.bodyBytes));
     } else {
       throw Exception('Javoblar tekshirilmadi: ${response.body}');
+    }
+  }
+
+  static Future<bool> rezalt(String token, Map result) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/api/submit-result'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(result),
+      );
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        throw Exception('else xato');
+      }
+    } catch (e) {
+      throw Exception('catch xato');
     }
   }
 }

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:spm_app/service/api_service.dart';
-import 'package:spm_app/service/storage_service.dart';
-import 'package:spm_app/ui/categories_screen.dart';
+import 'package:spm_app/main/service/api_service.dart';
+import 'package:spm_app/main/service/storage_service.dart';
+import 'package:spm_app/main/super_admin/categories_screen.dart';
+import 'package:spm_app/main/user/ui/categories_screen.dart';
 
 class RegisterUi extends StatefulWidget {
   const RegisterUi({super.key});
@@ -72,13 +73,19 @@ class _RegisterUiState extends State<RegisterUi> {
       );
 
       await StorageService.saveToken(response['access_token']);
-
+      print("sssssss ${response["user"]['role']}");
       if (!mounted) return;
-
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const CategoriesScreen()),
-      );
+      response["user"]['role'] == "super_admin"
+          ? Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const CategoriesScreenAdmin(),
+              ),
+            )
+          : Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const CategoriesScreen()),
+            );
     } catch (e) {
       setState(() {
         _errorMessage = 'Login yoki parol xato';
@@ -90,7 +97,6 @@ class _RegisterUiState extends State<RegisterUi> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.yellow,
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -108,7 +114,7 @@ class _RegisterUiState extends State<RegisterUi> {
                     const Icon(
                       Icons.menu_book,
                       size: 80,
-                      color: Color(0xff150856),
+                      color: Color(0xff130857),
                     ),
                     const SizedBox(height: 16),
                     const Text(
@@ -116,7 +122,7 @@ class _RegisterUiState extends State<RegisterUi> {
                       style: TextStyle(
                         fontSize: 32,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xff150856),
+                        color: Color(0xff130857),
                       ),
                     ),
 
@@ -168,7 +174,7 @@ class _RegisterUiState extends State<RegisterUi> {
                       child: ElevatedButton(
                         onPressed: _isLoading ? null : _register,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xff150856),
+                          backgroundColor: const Color(0xff130857),
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           shape: RoundedRectangleBorder(
@@ -179,10 +185,9 @@ class _RegisterUiState extends State<RegisterUi> {
                             ? const SizedBox(
                                 height: 20,
                                 width: 20,
-                                child: CircularProgressIndicator
-                                    .adaptive(
-                                      strokeWidth: 2,
-                                    ),
+                                child: CircularProgressIndicator.adaptive(
+                                  strokeWidth: 2,
+                                ),
                               )
                             : const Text(
                                 'Register',
@@ -199,7 +204,7 @@ class _RegisterUiState extends State<RegisterUi> {
                       child: ElevatedButton(
                         onPressed: _isLoading ? null : _login,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xff150856),
+                          backgroundColor: const Color(0xff130857),
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           shape: RoundedRectangleBorder(

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:spm_app/models/category.dart';
-import 'package:spm_app/models/question.dart';
+import 'package:spm_app/main/models/category.dart';
+import 'package:spm_app/main/models/question.dart';
 import 'package:spm_app/register.dart';
-import 'package:spm_app/service/api_service.dart';
-import 'package:spm_app/service/storage_service.dart';
+import 'package:spm_app/main/service/api_service.dart';
+import 'package:spm_app/main/service/storage_service.dart';
 
 // Quiz Screen
 class QuizScreen extends StatefulWidget {
@@ -23,8 +23,8 @@ class _QuizScreenState extends State<QuizScreen> {
   String? _errorMessage;
   int _startTime = 0;
   bool _showResult = false;
-  Map<String, dynamic>? _result;
-
+  Map<String, dynamic>? result;
+  bool isSendRezalt = false;
   @override
   void initState() {
     super.initState();
@@ -66,7 +66,7 @@ class _QuizScreenState extends State<QuizScreen> {
       _userAnswers[question.id] = answer;
     });
 
-    Future.delayed(const Duration(milliseconds: 800), () {
+    Future.delayed(const Duration(milliseconds: 400), () {
       if (_currentQuestion < _questions.length - 1) {
         setState(() {
           _currentQuestion++;
@@ -97,7 +97,7 @@ class _QuizScreenState extends State<QuizScreen> {
       );
 
       setState(() {
-        _result = response['result'];
+        result = response['result'];
         _showResult = true;
       });
     } catch (e) {
@@ -113,17 +113,14 @@ class _QuizScreenState extends State<QuizScreen> {
   Widget build(BuildContext context) {
     if (_isLoading) {
       return Scaffold(
-        backgroundColor: Colors.yellow,
         body: const Center(child: CircularProgressIndicator.adaptive()),
       );
     }
 
     if (_errorMessage != null) {
       return Scaffold(
-        backgroundColor: Colors.yellow,
         appBar: AppBar(
-          backgroundColor: Colors.yellow,
-          iconTheme: const IconThemeData(color: Color(0xff150856)),
+          iconTheme: const IconThemeData(color: Color(0xff130857)),
         ),
         body: Center(
           child: Padding(
@@ -142,7 +139,7 @@ class _QuizScreenState extends State<QuizScreen> {
                 ElevatedButton(
                   onPressed: () => Navigator.pop(context),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xff150856),
+                    backgroundColor: const Color(0xff130857),
                     foregroundColor: Colors.white,
                   ),
                   child: const Text('Orqaga qaytish'),
@@ -154,9 +151,8 @@ class _QuizScreenState extends State<QuizScreen> {
       );
     }
 
-    if (_showResult && _result != null) {
+    if (_showResult && result != null) {
       return Scaffold(
-        backgroundColor: Colors.yellow,
         body: SafeArea(
           child: Center(
             child: Padding(
@@ -174,7 +170,7 @@ class _QuizScreenState extends State<QuizScreen> {
                       const Icon(
                         Icons.emoji_events,
                         size: 80,
-                        color: Color(0xff150856),
+                        color: Color(0xff130857),
                       ),
                       const SizedBox(height: 16),
                       const Text(
@@ -182,7 +178,7 @@ class _QuizScreenState extends State<QuizScreen> {
                         style: TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xff150856),
+                          color: Color(0xff130857),
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -197,13 +193,13 @@ class _QuizScreenState extends State<QuizScreen> {
                       Container(
                         padding: const EdgeInsets.all(24),
                         decoration: BoxDecoration(
-                          color: const Color(0xff150856),
+                          color: const Color(0xff130857),
                           borderRadius: BorderRadius.circular(16),
                         ),
                         child: Column(
                           children: [
                             Text(
-                              '${_result!['correctAnswers']}/${_result!['totalQuestions']}',
+                              '${result!['correctAnswers']}/${result!['totalQuestions']}',
                               style: const TextStyle(
                                 fontSize: 48,
                                 fontWeight: FontWeight.bold,
@@ -219,7 +215,7 @@ class _QuizScreenState extends State<QuizScreen> {
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              '${_result!['percentage']}%',
+                              '${result!['percentage']}%',
                               style: const TextStyle(
                                 fontSize: 32,
                                 fontWeight: FontWeight.bold,
@@ -230,15 +226,61 @@ class _QuizScreenState extends State<QuizScreen> {
                         ),
                       ),
                       const SizedBox(height: 16),
-                      Text(
-                        'Natijalar Telegramga yuborildi',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.green[700],
-                          fontWeight: FontWeight.bold,
+                      SizedBox(
+                        width: double.infinity,
+                        child: InkWell(
+                          onTap: isSendRezalt
+                              ? () {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text("Natija Yuborilgan"),
+                                    ),
+                                  );
+                                }
+                              : () async {
+                                  final token = await StorageService.getToken();
+
+                                  final resultFromApi = await ApiService.rezalt(
+                                    token!,
+                                    result!,
+                                  );
+
+                                  setState(() {
+                                    isSendRezalt = resultFromApi;
+                                    print(resultFromApi);
+                                  });
+                                },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: const Color(0xff130857),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: isSendRezalt
+                                ? Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Text(
+                                        "Natijalar Yuborildi. ✅",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                : const Text(
+                                    'Natijalar Yuborish',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                          ),
                         ),
                       ),
-                      const SizedBox(height: 32),
+                      const SizedBox(height: 16),
                       SizedBox(
                         width: double.infinity,
                         child: OutlinedButton(
@@ -252,7 +294,7 @@ class _QuizScreenState extends State<QuizScreen> {
                           child: const Text(
                             'Boshqa mavzu tanlash',
                             style: TextStyle(
-                              color: Color(0xff150856),
+                              color: Color(0xff130857),
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -273,15 +315,13 @@ class _QuizScreenState extends State<QuizScreen> {
     final hasAnswered = _userAnswers.containsKey(question.id);
 
     return Scaffold(
-      backgroundColor: Colors.yellow,
       appBar: AppBar(
-        backgroundColor: Colors.yellow,
         elevation: 0,
-        iconTheme: const IconThemeData(color: Color(0xff150856)),
+        iconTheme: const IconThemeData(color: Color(0xff130857)),
         title: Text(
           widget.category.name,
           style: const TextStyle(
-            color: Color(0xff150856),
+            color: Color(0xff130857),
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -307,14 +347,14 @@ class _QuizScreenState extends State<QuizScreen> {
                           'Savol ${_currentQuestion + 1}/${_questions.length}',
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
-                            color: Color(0xff150856),
+                            color: Color(0xff130857),
                           ),
                         ),
                         Text(
                           'Javoblar: ${_userAnswers.length}',
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
-                            color: Color(0xff150856),
+                            color: Color(0xff130857),
                           ),
                         ),
                       ],
@@ -327,7 +367,7 @@ class _QuizScreenState extends State<QuizScreen> {
                         minHeight: 8,
                         backgroundColor: Colors.grey[200],
                         valueColor: const AlwaysStoppedAnimation<Color>(
-                          Color(0xff150856),
+                          Color(0xff130857),
                         ),
                       ),
                     ),
@@ -338,7 +378,7 @@ class _QuizScreenState extends State<QuizScreen> {
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
                         height: 1.4,
-                        color: Color(0xff150856),
+                        color: Color(0xff130857),
                       ),
                     ),
                     const SizedBox(height: 32),
@@ -376,7 +416,7 @@ class _QuizScreenState extends State<QuizScreen> {
                                     style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w500,
-                                      color: Color(0xff150856),
+                                      color: Color(0xff130857),
                                     ),
                                   ),
                                 ),
