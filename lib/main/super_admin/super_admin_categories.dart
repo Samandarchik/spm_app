@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:spm_app/main/service/api_service.dart';
 import 'package:spm_app/main/service/storage_service.dart';
 import 'package:spm_app/main/super_admin/add_category_screen.dart';
-import 'package:spm_app/main/super_admin/questions_screen.dart';
 import 'package:spm_app/main/super_admin/admin_api_service.dart';
+import 'package:spm_app/main/super_admin/questions_screen.dart';
 import 'package:spm_app/main/super_admin/statistics_screen.dart';
+import 'package:spm_app/main/super_admin/users_screen.dart';
 import 'package:spm_app/register.dart';
 
 class CategoriesScreenAdmin extends StatefulWidget {
@@ -248,7 +249,9 @@ class _CategoriesScreenAdminState extends State<CategoriesScreenAdmin> {
       ),
       body: _selectedIndex == 0
           ? _buildCategoriesTab()
-          : const StatisticsScreen(),
+          : _selectedIndex == 1
+          ? const StatisticsScreen()
+          : const UsersScreen(),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: (index) => setState(() => _selectedIndex = index),
@@ -261,6 +264,10 @@ class _CategoriesScreenAdminState extends State<CategoriesScreenAdmin> {
           BottomNavigationBarItem(
             icon: Icon(Icons.bar_chart),
             label: 'Statistika',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.people),
+            label: 'Foydalanuvchilar',
           ),
         ],
       ),

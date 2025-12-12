@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:spm_app/main/service/api_service.dart';
 import 'package:spm_app/main/service/storage_service.dart';
-import 'package:spm_app/main/super_admin/categories_screen.dart';
+import 'package:spm_app/main/super_admin/super_admin_categories.dart';
 import 'package:spm_app/main/user/ui/categories_screen.dart';
 
 class RegisterUi extends StatefulWidget {

@@ -115,7 +115,7 @@ class ApiService {
         throw Exception('else xato');
       }
     } catch (e) {
-      throw Exception('catch xato');
+      throw Exception('catch xato $e');
     }
   }
 }

@@ -51,6 +51,42 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
     }
   }
 
+  Future<void> deleteQuestion(String questionId) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('O\'chirish'),
+        content: const Text('Bu savolni o\'chirishni xohlaysizmi?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Yo\'q'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('Ha'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true) {
+      try {
+        final token = await StorageService.getToken();
+        await ApiServiceAdmin.deleteQuestion(token!, questionId);
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Savol o\'chirildi')));
+        loadQuestions();
+      } catch (e) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Xatolik: $e')));
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -112,6 +148,53 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                       title: Text(
                         q['question'] ?? '',
                         style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      trailing: PopupMenuButton(
+                        icon: const Icon(Icons.more_vert),
+                        itemBuilder: (context) => [
+                          const PopupMenuItem(
+                            value: 'edit',
+                            child: Row(
+                              children: [
+                                Icon(Icons.edit, size: 20),
+                                SizedBox(width: 8),
+                                Text('Tahrirlash'),
+                              ],
+                            ),
+                          ),
+                          const PopupMenuItem(
+                            value: 'delete',
+                            child: Row(
+                              children: [
+                                Icon(Icons.delete, size: 20, color: Colors.red),
+                                SizedBox(width: 8),
+                                Text(
+                                  'O\'chirish',
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                        onSelected: (value) {
+                          if (value == 'edit') {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => AddQuestionScreen(
+                                  categoryId: widget.categoryId,
+                                  categoryName: widget.categoryName,
+                                  question: q,
+                                  isEdit: true,
+                                ),
+                              ),
+                            ).then((result) {
+                              if (result == true) loadQuestions();
+                            });
+                          } else if (value == 'delete') {
+                            deleteQuestion(q['id']);
+                          }
+                        },
                       ),
                       children: [
                         Padding(

@@ -262,7 +262,7 @@ class _QuizScreenState extends State<QuizScreen> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       const Text(
-                                        "Natijalar Yuborildi. ✅",
+                                        "Natija Yuborildi. ✅",
                                         style: TextStyle(
                                           color: Colors.white,
                                           fontWeight: FontWeight.bold,
@@ -271,7 +271,7 @@ class _QuizScreenState extends State<QuizScreen> {
                                     ],
                                   )
                                 : const Text(
-                                    'Natijalar Yuborish',
+                                    'Natijani Yuborish',
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,

@@ -110,6 +110,51 @@ class ApiServiceAdmin {
     }
   }
 
+  static Future<Map<String, dynamic>> updateQuestion(
+    String token,
+    String questionId,
+    String categoryId,
+    String question,
+    List<String> options,
+    String correctAnswer,
+  ) async {
+    final response = await http.put(
+      Uri.parse('$baseUrl/api/questions/$questionId'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode({
+        'categoryId': categoryId,
+        'question': question,
+        'options': options,
+        'correctAnswer': correctAnswer,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(utf8.decode(response.bodyBytes));
+    } else {
+      throw Exception('Savol yangilanmadi');
+    }
+  }
+
+  static Future<Map<String, dynamic>> deleteQuestion(
+    String token,
+    String questionId,
+  ) async {
+    final response = await http.delete(
+      Uri.parse('$baseUrl/api/questions/$questionId'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(utf8.decode(response.bodyBytes));
+    } else {
+      throw Exception('Savol o\'chirilmadi');
+    }
+  }
+
   static Future<Map<String, dynamic>> addSingleQuestion(
     String token,
     String categoryId,
@@ -149,10 +194,7 @@ class ApiServiceAdmin {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       },
-      body: jsonEncode({
-        'categoryId': categoryId,
-        'questions': questions,
-      }),
+      body: jsonEncode({'categoryId': categoryId, 'questions': questions}),
     );
 
     if (response.statusCode == 200) {
@@ -203,6 +245,62 @@ class ApiServiceAdmin {
       return jsonDecode(utf8.decode(response.bodyBytes));
     } else {
       throw Exception('Natijalar yuklanmadi');
+    }
+  }
+
+  // Foydalanuvchilar
+  static Future<Map<String, dynamic>> getUsers(String token) async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/api/users'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(utf8.decode(response.bodyBytes));
+    } else {
+      throw Exception('Foydalanuvchilar yuklanmadi');
+    }
+  }
+
+  static Future<Map<String, dynamic>> createUser(
+    String token,
+    String username,
+    String password,
+    String role,
+  ) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/api/register'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode({
+        'username': username,
+        'password': password,
+        'role': role,
+      }),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return jsonDecode(utf8.decode(response.bodyBytes));
+    } else {
+      throw Exception('Foydalanuvchi yaratilmadi: ${response.body}');
+    }
+  }
+
+  static Future<Map<String, dynamic>> deleteUser(
+    String token,
+    String userId,
+  ) async {
+    final response = await http.delete(
+      Uri.parse('$baseUrl/api/users/$userId'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(utf8.decode(response.bodyBytes));
+    } else {
+      throw Exception('Foydalanuvchi o\'chirilmadi');
     }
   }
 }

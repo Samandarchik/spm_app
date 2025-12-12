@@ -22,22 +22,8 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
   bool _isLoading = false;
 
   final List<String> _icons = [
-    '📚',
-    '📖',
-    '✏️',
-    '🎓',
-    '🧮',
-    '🔬',
-    '🌍',
-    '💻',
-    '🎨',
-    '🎵',
-    '⚽',
-    '🏃',
-    '🍕',
-    '🚗',
-    '✈️',
-    '🏠',
+    '📚', '📖', '✏️', '🎓', '🧮', '🔬', '🌍', '💻',
+    '🎨', '🎵', '⚽', '🏃', '🍕', '🚗', '✈️', '🏠'
   ];
 
   @override
@@ -47,9 +33,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
       _nameController.text = widget.category!['name'] ?? '';
       _descriptionController.text = widget.category!['description'] ?? '';
       _selectedIcon = widget.category!['icon'] ?? '📚';
-      _selectedRoles = List<String>.from(
-        widget.category!['allowedRoles'] ?? [],
-      );
+      _selectedRoles = List<String>.from(widget.category!['allowedRoles'] ?? []);
     }
     loadRoles();
   }
@@ -65,9 +49,9 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Rollar yuklanmadi: $e')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Rollar yuklanmadi: $e')),
+        );
       }
     }
   }
@@ -75,9 +59,9 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
   Future<void> saveCategory() async {
     if (!_formKey.currentState!.validate()) return;
     if (_selectedRoles.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Kamida bitta rol tanlang')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Kamida bitta rol tanlang')),
+      );
       return;
     }
 
@@ -118,9 +102,9 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Xatolik: $e')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Xatolik: $e')),
+        );
       }
     } finally {
       setState(() => _isLoading = false);
@@ -131,9 +115,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          widget.isEdit ? 'Kategoriyani tahrirlash' : 'Yangi kategoriya',
-        ),
+        title: Text(widget.isEdit ? 'Kategoriyani tahrirlash' : 'Yangi kategoriya'),
         backgroundColor: const Color(0xff130857),
         foregroundColor: Colors.white,
       ),
@@ -197,7 +179,10 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                         ),
                       ),
                       child: Center(
-                        child: Text(icon, style: const TextStyle(fontSize: 24)),
+                        child: Text(
+                          icon,
+                          style: const TextStyle(fontSize: 24),
+                        ),
                       ),
                     ),
                   );

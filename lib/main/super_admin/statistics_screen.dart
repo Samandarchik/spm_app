@@ -34,9 +34,9 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     } catch (e) {
       setState(() => isLoading = false);
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Xatolik: $e')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Xatolik: $e')),
+        );
       }
     }
   }
@@ -157,7 +157,10 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                                   mainAxisSize: MainAxisSize.min,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    _buildDetailRow('Kategoriya', categoryName),
+                                    _buildDetailRow(
+                                      'Kategoriya',
+                                      categoryName,
+                                    ),
                                     const Divider(),
                                     _buildDetailRow(
                                       'Testlar soni',
@@ -199,7 +202,10 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                             ),
                             child: Row(
                               children: [
-                                Expanded(flex: 2, child: Text(username)),
+                                Expanded(
+                                  flex: 2,
+                                  child: Text(username),
+                                ),
                                 Expanded(
                                   child: Text(
                                     '$testCount',
@@ -237,14 +243,15 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: const TextStyle(fontWeight: FontWeight.w500)),
+          Text(
+            label,
+            style: const TextStyle(fontWeight: FontWeight.w500),
+          ),
           Text(
             value,
             style: TextStyle(
               color: valueColor ?? Colors.black,
-              fontWeight: valueColor != null
-                  ? FontWeight.bold
-                  : FontWeight.normal,
+              fontWeight: valueColor != null ? FontWeight.bold : FontWeight.normal,
             ),
           ),
         ],

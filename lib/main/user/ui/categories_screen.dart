@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:spm_app/main/models/category.dart';
+import 'package:spm_app/main/super_admin/statistics_screen.dart';
+import 'package:spm_app/main/user/ui/statis.dart';
 import 'package:spm_app/register.dart';
 import 'package:spm_app/main/service/api_service.dart';
 import 'package:spm_app/main/service/storage_service.dart';
@@ -90,7 +92,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => RezumePage()),
+                MaterialPageRoute(builder: (context) => StatisUser()),
               );
             },
             icon: Icon(Icons.people, color: Color(0xff130857)),

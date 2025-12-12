@@ -5,11 +5,15 @@ import 'package:spm_app/main/super_admin/admin_api_service.dart';
 class AddQuestionScreen extends StatefulWidget {
   final String categoryId;
   final String categoryName;
+  final Map<String, dynamic>? question;
+  final bool isEdit;
 
   const AddQuestionScreen({
     super.key,
     required this.categoryId,
     required this.categoryName,
+    this.question,
+    this.isEdit = false,
   });
 
   @override
@@ -27,6 +31,21 @@ class _AddQuestionScreenState extends State<AddQuestionScreen> {
   ];
   int _correctAnswerIndex = 0;
   bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.isEdit && widget.question != null) {
+      _questionController.text = widget.question!['question'] ?? '';
+      final options = List<String>.from(widget.question!['options'] ?? []);
+      for (int i = 0; i < options.length && i < 4; i++) {
+        _optionControllers[i].text = options[i];
+      }
+      // final correctAnswer = widget.question!['correctAnswer'];
+      // _correctAnswerIndex = options.indexOf(correctAnswer);
+      // if (_correctAnswerIndex < 0) _correctAnswerIndex = 0;
+    }
+  }
 
   Future<void> saveQuestion() async {
     if (!_formKey.currentState!.validate()) return;
@@ -49,18 +68,36 @@ class _AddQuestionScreenState extends State<AddQuestionScreen> {
         final options = _optionControllers.map((c) => c.text.trim()).toList();
         final correctAnswer = options[_correctAnswerIndex];
 
-        await ApiServiceAdmin.addSingleQuestion(
-          token,
-          widget.categoryId,
-          _questionController.text.trim(),
-          options,
-          correctAnswer,
-        );
+        if (widget.isEdit) {
+          await ApiServiceAdmin.updateQuestion(
+            token,
+            widget.question!['id'],
+            widget.categoryId,
+            _questionController.text.trim(),
+            options,
+            correctAnswer,
+          );
+          if (mounted) {
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(const SnackBar(content: Text('Savol yangilandi')));
+          }
+        } else {
+          await ApiServiceAdmin.addSingleQuestion(
+            token,
+            widget.categoryId,
+            _questionController.text.trim(),
+            options,
+            correctAnswer,
+          );
+          if (mounted) {
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(const SnackBar(content: Text('Savol qo\'shildi')));
+          }
+        }
 
         if (mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(const SnackBar(content: Text('Savol qo\'shildi')));
           Navigator.pop(context, true);
         }
       }
@@ -79,7 +116,7 @@ class _AddQuestionScreenState extends State<AddQuestionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Yangi savol'),
+        title: Text(widget.isEdit ? 'Savolni tahrirlash' : 'Yangi savol'),
         backgroundColor: const Color(0xff130857),
         foregroundColor: Colors.white,
       ),
@@ -193,7 +230,10 @@ class _AddQuestionScreenState extends State<AddQuestionScreen> {
                   ),
                   child: _isLoading
                       ? const CircularProgressIndicator(color: Colors.white)
-                      : const Text('Saqlash', style: TextStyle(fontSize: 16)),
+                      : Text(
+                          widget.isEdit ? 'Yangilash' : 'Saqlash',
+                          style: const TextStyle(fontSize: 16),
+                        ),
                 ),
               ),
             ],
