@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:spm_app/main/service/storage_service.dart';
 
 class ApiService {
-  static const String baseUrl = 'http://0.0.0.0:8050';
+  static const String baseUrl = 'https://quiz.monebakeryuz.uz';
   static Future<Map<String, dynamic>> login(
     String username,
     String password,

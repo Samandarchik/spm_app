@@ -300,6 +300,52 @@ class _QuizScreenState extends State<QuizScreen> {
                           ),
                         ),
                       ),
+                      SizedBox(
+                        width: double.infinity,
+                        child: InkWell(
+                          onTap: () async {
+                            final token = await StorageService.getToken();
+
+                            final resultFromApi = await ApiService.rezalt(
+                              token!,
+                              result!,
+                            );
+
+                            setState(() {
+                              isSendRezalt = resultFromApi;
+                              print(resultFromApi);
+                            });
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: const Color(0xff130857),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: isSendRezalt
+                                ? Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Text(
+                                        "Natija Yuborildi. ✅",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                : const Text(
+                                    'Natijani Yuborish',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
