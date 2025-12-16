@@ -16,14 +16,30 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _descriptionController = TextEditingController();
+  final _iconController = TextEditingController();
   String _selectedIcon = '📚';
+  bool _useTextField = false;
   List<String> _availableRoles = [];
   List<String> _selectedRoles = [];
   bool _isLoading = false;
 
   final List<String> _icons = [
-    '📚', '📖', '✏️', '🎓', '🧮', '🔬', '🌍', '💻',
-    '🎨', '🎵', '⚽', '🏃', '🍕', '🚗', '✈️', '🏠'
+    '📚',
+    '📖',
+    '✏️',
+    '🎓',
+    '🧮',
+    '🔬',
+    '🌍',
+    '💻',
+    '🎨',
+    '🎵',
+    '⚽',
+    '🏃',
+    '🍕',
+    '🚗',
+    '✈️',
+    '🏠',
   ];
 
   @override
@@ -33,7 +49,10 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
       _nameController.text = widget.category!['name'] ?? '';
       _descriptionController.text = widget.category!['description'] ?? '';
       _selectedIcon = widget.category!['icon'] ?? '📚';
-      _selectedRoles = List<String>.from(widget.category!['allowedRoles'] ?? []);
+      _iconController.text = _selectedIcon;
+      _selectedRoles = List<String>.from(
+        widget.category!['allowedRoles'] ?? [],
+      );
     }
     loadRoles();
   }
@@ -49,9 +68,9 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Rollar yuklanmadi: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Rollar yuklanmadi: $e')));
       }
     }
   }
@@ -59,9 +78,9 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
   Future<void> saveCategory() async {
     if (!_formKey.currentState!.validate()) return;
     if (_selectedRoles.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Kamida bitta rol tanlang')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Kamida bitta rol tanlang')));
       return;
     }
 
@@ -70,13 +89,15 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
     try {
       final token = await StorageService.getToken();
       if (token != null) {
+        final iconToUse = _useTextField ? _iconController.text : _selectedIcon;
+
         if (widget.isEdit) {
           await ApiServiceAdmin.updateCategory(
             token,
             widget.category!['id'],
             _nameController.text,
             _descriptionController.text,
-            _selectedIcon,
+            iconToUse,
             _selectedRoles,
           );
           if (mounted) {
@@ -89,7 +110,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
             token,
             _nameController.text,
             _descriptionController.text,
-            _selectedIcon,
+            iconToUse,
             _selectedRoles,
           );
           if (mounted) {
@@ -102,9 +123,9 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Xatolik: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Xatolik: $e')));
       }
     } finally {
       setState(() => _isLoading = false);
@@ -115,7 +136,9 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.isEdit ? 'Kategoriyani tahrirlash' : 'Yangi kategoriya'),
+        title: Text(
+          widget.isEdit ? 'Kategoriyani tahrirlash' : 'Yangi kategoriya',
+        ),
         backgroundColor: const Color(0xff130857),
         foregroundColor: Colors.white,
       ),
@@ -156,38 +179,127 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: _icons.map((icon) {
-                  final isSelected = icon == _selectedIcon;
-                  return InkWell(
-                    onTap: () => setState(() => _selectedIcon = icon),
-                    child: Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: isSelected
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        setState(() {
+                          _useTextField = false;
+                          _iconController.clear();
+                        });
+                      },
+                      icon: const Icon(Icons.grid_view),
+                      label: const Text('Ro\'yxatdan'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: !_useTextField
                             ? const Color(0xff130857)
-                            : Colors.grey[200],
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
+                            : Colors.grey[300],
+                        foregroundColor: !_useTextField
+                            ? Colors.white
+                            : Colors.black87,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        setState(() {
+                          _useTextField = true;
+                          _iconController.text = _selectedIcon;
+                        });
+                      },
+                      icon: const Icon(Icons.edit),
+                      label: const Text('Qo\'lda kiritish'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: _useTextField
+                            ? const Color(0xff130857)
+                            : Colors.grey[300],
+                        foregroundColor: _useTextField
+                            ? Colors.white
+                            : Colors.black87,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              if (!_useTextField)
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: _icons.map((icon) {
+                    final isSelected = icon == _selectedIcon;
+                    return InkWell(
+                      onTap: () => setState(() => _selectedIcon = icon),
+                      child: Container(
+                        width: 50,
+                        height: 50,
+                        decoration: BoxDecoration(
                           color: isSelected
                               ? const Color(0xff130857)
-                              : Colors.grey[300]!,
-                          width: 2,
+                              : Colors.grey[200],
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: isSelected
+                                ? const Color(0xff130857)
+                                : Colors.grey[300]!,
+                            width: 2,
+                          ),
                         ),
+                        child: Center(
+                          child: Text(
+                            icon,
+                            style: const TextStyle(fontSize: 24),
+                          ),
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                )
+              else
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        controller: _iconController,
+                        decoration: const InputDecoration(
+                          labelText: 'Icon (emoji)',
+                          border: OutlineInputBorder(),
+                          prefixIcon: Icon(Icons.emoji_emotions),
+                          hintText: 'Masalan: 🎯, 📱, 💡',
+                        ),
+                        style: const TextStyle(fontSize: 24),
+                        maxLength: 2,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Icon kiriting';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Container(
+                      width: 60,
+                      height: 60,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.grey[400]!, width: 2),
                       ),
                       child: Center(
                         child: Text(
-                          icon,
-                          style: const TextStyle(fontSize: 24),
+                          _iconController.text.isEmpty
+                              ? '?'
+                              : _iconController.text,
+                          style: const TextStyle(fontSize: 28),
                         ),
                       ),
                     ),
-                  );
-                }).toList(),
-              ),
+                  ],
+                ),
               const SizedBox(height: 24),
               const Text(
                 'Ruxsat berilgan rollar',
@@ -251,6 +363,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
   void dispose() {
     _nameController.dispose();
     _descriptionController.dispose();
+    _iconController.dispose();
     super.dispose();
   }
 }
