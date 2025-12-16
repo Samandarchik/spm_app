@@ -79,7 +79,9 @@ class _UsersScreenState extends State<UsersScreen> {
   Future<void> showAddUserDialog() async {
     final usernameController = TextEditingController();
     final passwordController = TextEditingController();
+    final roleController = TextEditingController();
     String selectedRole = 'register';
+    bool useTextField = false;
     final formKey = GlobalKey<FormState>();
 
     final roles = await _loadRoles();
@@ -93,58 +95,121 @@ class _UsersScreenState extends State<UsersScreen> {
           title: const Text('Yangi foydalanuvchi'),
           content: Form(
             key: formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextFormField(
-                  controller: usernameController,
-                  decoration: const InputDecoration(
-                    labelText: 'Username',
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.person),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextFormField(
+                    controller: usernameController,
+                    decoration: const InputDecoration(
+                      labelText: 'Username',
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.person),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Username kiriting';
+                      }
+                      return null;
+                    },
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Username kiriting';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 12),
-                TextFormField(
-                  controller: passwordController,
-                  decoration: const InputDecoration(
-                    labelText: 'Parol',
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.lock),
+                  const SizedBox(height: 12),
+                  TextFormField(
+                    controller: passwordController,
+                    decoration: const InputDecoration(
+                      labelText: 'Parol',
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.lock),
+                    ),
+                    obscureText: true,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Parol kiriting';
+                      }
+                      if (value.length < 6) {
+                        return 'Parol 6 ta belgidan kam bo\'lmasin';
+                      }
+                      return null;
+                    },
                   ),
-                  obscureText: true,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Parol kiriting';
-                    }
-                    if (value.length < 6) {
-                      return 'Parol 6 ta belgidan kam bo\'lmasin';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 12),
-                DropdownButtonFormField<String>(
-                  value: selectedRole,
-                  decoration: const InputDecoration(
-                    labelText: 'Rol',
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.security),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            setStateDialog(() {
+                              useTextField = false;
+                              roleController.clear();
+                            });
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: !useTextField
+                                ? const Color(0xff130857)
+                                : Colors.grey[300],
+                            foregroundColor: !useTextField
+                                ? Colors.white
+                                : Colors.black87,
+                          ),
+                          child: const Text('Ro\'yxatdan tanlash'),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            setStateDialog(() {
+                              useTextField = true;
+                            });
+                          },
+
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: useTextField
+                                ? const Color(0xff130857)
+                                : Colors.grey[300],
+                            foregroundColor: useTextField
+                                ? Colors.white
+                                : Colors.black87,
+                          ),
+                          child: const Text('Qo\'lda kiritish'),
+                        ),
+                      ),
+                    ],
                   ),
-                  items: ['register', ...roles].map((role) {
-                    return DropdownMenuItem(value: role, child: Text(role));
-                  }).toList(),
-                  onChanged: (value) {
-                    setStateDialog(() => selectedRole = value!);
-                  },
-                ),
-              ],
+                  const SizedBox(height: 12),
+                  if (!useTextField)
+                    DropdownButtonFormField<String>(
+                      value: selectedRole,
+                      decoration: const InputDecoration(
+                        labelText: 'Rol',
+                        border: OutlineInputBorder(),
+                        prefixIcon: Icon(Icons.security),
+                      ),
+                      items: roles.map((role) {
+                        return DropdownMenuItem(value: role, child: Text(role));
+                      }).toList(),
+                      onChanged: (value) {
+                        setStateDialog(() => selectedRole = value!);
+                      },
+                    )
+                  else
+                    TextFormField(
+                      controller: roleController,
+                      decoration: const InputDecoration(
+                        labelText: 'Rol nomi',
+                        border: OutlineInputBorder(),
+                        prefixIcon: Icon(Icons.security),
+                        hintText: 'Masalan: manager, operator',
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Rol nomini kiriting';
+                        }
+                        return null;
+                      },
+                    ),
+                ],
+              ),
             ),
           ),
           actions: [
@@ -157,11 +222,14 @@ class _UsersScreenState extends State<UsersScreen> {
                 if (formKey.currentState!.validate()) {
                   try {
                     final token = await StorageService.getToken();
+                    final roleToUse = useTextField
+                        ? roleController.text
+                        : selectedRole;
                     await ApiServiceAdmin.createUser(
                       token!,
                       usernameController.text,
                       passwordController.text,
-                      selectedRole,
+                      roleToUse,
                     );
                     if (mounted) {
                       Navigator.pop(context);
@@ -291,8 +359,11 @@ class _UsersScreenState extends State<UsersScreen> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: showAddUserDialog,
         backgroundColor: const Color(0xff130857),
-        icon: const Icon(Icons.add),
-        label: const Text('Foydalanuvchi'),
+        icon: const Icon(Icons.add, color: Colors.white),
+        label: const Text(
+          'Foydalanuvchi',
+          style: TextStyle(color: Colors.white),
+        ),
       ),
     );
   }

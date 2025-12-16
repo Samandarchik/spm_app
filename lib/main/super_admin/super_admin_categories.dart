@@ -283,8 +283,11 @@ class _CategoriesScreenAdminState extends State<CategoriesScreenAdmin> {
                 loadCategories();
               },
               backgroundColor: const Color(0xff130857),
-              icon: const Icon(Icons.add),
-              label: const Text('Kategoriya'),
+              icon: const Icon(Icons.add, color: Colors.white),
+              label: const Text(
+                'Kategoriya',
+                style: TextStyle(color: Colors.white),
+              ),
             )
           : null,
     );

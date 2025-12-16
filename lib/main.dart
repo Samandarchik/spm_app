@@ -18,6 +18,13 @@ class QuizApp extends StatelessWidget {
         fontFamily: 'Arial',
         scaffoldBackgroundColor: Color(0xfffdc109),
         appBarTheme: AppBarThemeData(backgroundColor: Color(0xfffdc109)),
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+          extendedTextStyle: TextStyle(
+            fontSize: 16,
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
       home: const SplashScreen(),
     );

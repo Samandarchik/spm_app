@@ -4,6 +4,7 @@ import 'package:spm_app/main/models/question.dart';
 import 'package:spm_app/register.dart';
 import 'package:spm_app/main/service/api_service.dart';
 import 'package:spm_app/main/service/storage_service.dart';
+import 'quiz_result_screen.dart';
 
 // Quiz Screen
 class QuizScreen extends StatefulWidget {
@@ -22,9 +23,7 @@ class _QuizScreenState extends State<QuizScreen> {
   bool _isLoading = true;
   String? _errorMessage;
   int _startTime = 0;
-  bool _showResult = false;
-  Map<String, dynamic>? result;
-  bool isSendRezalt = false;
+
   @override
   void initState() {
     super.initState();
@@ -96,10 +95,17 @@ class _QuizScreenState extends State<QuizScreen> {
         timeSpent,
       );
 
-      setState(() {
-        result = response['result'];
-        _showResult = true;
-      });
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => QuizResultScreen(
+              result: response['result'],
+              category: widget.category,
+            ),
+          ),
+        );
+      }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(
@@ -145,211 +151,6 @@ class _QuizScreenState extends State<QuizScreen> {
                   child: const Text('Orqaga qaytish'),
                 ),
               ],
-            ),
-          ),
-        ),
-      );
-    }
-
-    if (_showResult && result != null) {
-      return Scaffold(
-        body: SafeArea(
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: Card(
-                elevation: 8,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(24),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(32.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(
-                        Icons.emoji_events,
-                        size: 80,
-                        color: Color(0xff130857),
-                      ),
-                      const SizedBox(height: 16),
-                      const Text(
-                        'Test yakunlandi!',
-                        style: TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xff130857),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        widget.category.name,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          color: Colors.black54,
-                        ),
-                      ),
-                      const SizedBox(height: 32),
-                      Container(
-                        padding: const EdgeInsets.all(24),
-                        decoration: BoxDecoration(
-                          color: const Color(0xff130857),
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Column(
-                          children: [
-                            Text(
-                              '${result!['correctAnswers']}/${result!['totalQuestions']}',
-                              style: const TextStyle(
-                                fontSize: 48,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
-                            const Text(
-                              'To\'g\'ri javoblar',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.white,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              '${result!['percentage']}%',
-                              style: const TextStyle(
-                                fontSize: 32,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      SizedBox(
-                        width: double.infinity,
-                        child: InkWell(
-                          onTap: isSendRezalt
-                              ? () {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text("Natija Yuborilgan"),
-                                    ),
-                                  );
-                                }
-                              : () async {
-                                  final token = await StorageService.getToken();
-
-                                  final resultFromApi = await ApiService.rezalt(
-                                    token!,
-                                    result!,
-                                  );
-
-                                  setState(() {
-                                    isSendRezalt = resultFromApi;
-                                    print(resultFromApi);
-                                  });
-                                },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              color: const Color(0xff130857),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: isSendRezalt
-                                ? Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      const Text(
-                                        "Natija Yuborildi. ✅",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                : const Text(
-                                    'Natijani Yuborish',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      SizedBox(
-                        width: double.infinity,
-                        child: OutlinedButton(
-                          onPressed: () => Navigator.pop(context),
-                          style: OutlinedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          child: const Text(
-                            'Boshqa mavzu tanlash',
-                            style: TextStyle(
-                              color: Color(0xff130857),
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: double.infinity,
-                        child: InkWell(
-                          onTap: () async {
-                            final token = await StorageService.getToken();
-
-                            final resultFromApi = await ApiService.rezalt(
-                              token!,
-                              result!,
-                            );
-
-                            setState(() {
-                              isSendRezalt = resultFromApi;
-                              print(resultFromApi);
-                            });
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              color: const Color(0xff130857),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: isSendRezalt
-                                ? Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      const Text(
-                                        "Natija Yuborildi. ✅",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                : const Text(
-                                    'Natijani Yuborish',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
             ),
           ),
         ),

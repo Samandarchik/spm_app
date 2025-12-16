@@ -271,6 +271,7 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
         backgroundColor: const Color(0xff130857),
         icon: const Icon(Icons.add),
         label: const Text('Savol'),
+        extendedTextStyle: TextStyle(color: Colors.white),
       ),
     );
   }
