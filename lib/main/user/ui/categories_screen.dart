@@ -1,13 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:spm_app/main/models/category.dart';
-import 'package:spm_app/main/super_admin/statistics_screen.dart';
 import 'package:spm_app/main/user/ui/statis.dart';
 import 'package:spm_app/register.dart';
 import 'package:spm_app/main/service/api_service.dart';
 import 'package:spm_app/main/service/storage_service.dart';
 import 'package:spm_app/main/user/ui/quiz_screen.dart';
-import 'package:spm_app/main/user/ui/rezume_page.dart';
 
 // Categories Screen
 class CategoriesScreen extends StatefulWidget {
@@ -22,11 +19,14 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   bool _isLoading = true;
   String? _errorMessage;
   Map<String, dynamic>? _user;
+  bool isObscure = true;
+  late TextEditingController passwordController;
 
   @override
   void initState() {
     super.initState();
     _loadData();
+    passwordController = TextEditingController();
   }
 
   Future<void> _loadData() async {
@@ -80,6 +80,13 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    passwordController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -96,6 +103,50 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
               );
             },
             icon: Icon(Icons.people, color: Color(0xff130857)),
+          ),
+          IconButton(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('Passwordni almashtirish'),
+                  content: TextField(
+                    obscureText: true,
+                    controller: passwordController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Password',
+                    ),
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text('Yo\'q'),
+                    ),
+                    TextButton(
+                      onPressed: () async {
+                        final bool response = await ApiService.passwordUpdate(
+                          passwordController.text,
+                        );
+                        if (response) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                'Password muvaffaqiyatli almashtirildi',
+                              ),
+                            ),
+                          );
+                        }
+                        Navigator.pop(context);
+                      },
+                      style: TextButton.styleFrom(foregroundColor: Colors.red),
+                      child: const Text('Ha'),
+                    ),
+                  ],
+                ),
+              );
+            },
+            icon: Icon(Icons.lock, color: Color(0xff130857)),
           ),
           IconButton(
             onPressed: _logout,

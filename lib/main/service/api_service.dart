@@ -22,6 +22,25 @@ class ApiService {
     }
   }
 
+  static Future<bool> passwordUpdate(String newPassword) async {
+    final token = await StorageService.getToken();
+
+    try {
+      final response = await http.put(
+        Uri.parse('$baseUrl/api/passwordupdate'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode({'newPassword': newPassword}),
+      );
+      return response.statusCode == 200;
+    } catch (e) {
+      print("Xato: $e");
+      return false;
+    }
+  }
+
   static Future<Map<String, dynamic>> register(
     String username,
     String password,

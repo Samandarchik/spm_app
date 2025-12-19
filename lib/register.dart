@@ -32,22 +32,23 @@ class _RegisterUiState extends State<RegisterUi> {
     });
 
     try {
-      final response = await ApiService.register(
-        _usernameController.text.trim(),
-        _passwordController.text,
-      );
-
+      final response = await ApiService.login("test", "test12");
       await StorageService.saveToken(response['access_token']);
-
       if (!mounted) return;
-
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const CategoriesScreen()),
-      );
+      response["user"]['role'] == "super_admin"
+          ? Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const CategoriesScreenAdmin(),
+              ),
+            )
+          : Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const CategoriesScreen()),
+            );
     } catch (e) {
       setState(() {
-        _errorMessage = 'Username already exists';
+        _errorMessage = 'Login yoki parol xato';
         _isLoading = false;
       });
     }
@@ -73,7 +74,6 @@ class _RegisterUiState extends State<RegisterUi> {
       );
 
       await StorageService.saveToken(response['access_token']);
-      print("sssssss ${response["user"]['role']}");
       if (!mounted) return;
       response["user"]['role'] == "super_admin"
           ? Navigator.pushReplacement(

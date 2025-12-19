@@ -80,7 +80,7 @@ class _UsersScreenState extends State<UsersScreen> {
     final usernameController = TextEditingController();
     final passwordController = TextEditingController();
     final roleController = TextEditingController();
-    String selectedRole = 'register';
+    String selectedRole = '';
     bool useTextField = false;
     final formKey = GlobalKey<FormState>();
 
@@ -179,7 +179,7 @@ class _UsersScreenState extends State<UsersScreen> {
                   const SizedBox(height: 12),
                   if (!useTextField)
                     DropdownButtonFormField<String>(
-                      value: selectedRole,
+                      // value: selectedRole,
                       decoration: const InputDecoration(
                         labelText: 'Rol',
                         border: OutlineInputBorder(),
