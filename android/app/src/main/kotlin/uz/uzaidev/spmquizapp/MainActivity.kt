@@ -1,4 +1,4 @@
-package com.example.spm_app
+package uz.uzaidev.spmquizapp
 
 import io.flutter.embedding.android.FlutterActivity
 
