@@ -100,7 +100,7 @@ class _CategoriesScreenAdminState extends State<CategoriesScreenAdmin> {
 
   Widget _buildCategoriesTab() {
     if (isLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return const Center(child: CircularProgressIndicator.adaptive());
     }
 
     if (categories.isEmpty) {
@@ -140,94 +140,47 @@ class _CategoriesScreenAdminState extends State<CategoriesScreenAdmin> {
         itemCount: categories.length,
         itemBuilder: (context, index) {
           final category = categories[index];
-          return Card(
-            margin: const EdgeInsets.only(bottom: 12),
-            elevation: 2,
-            child: ListTile(
-              contentPadding: const EdgeInsets.all(16),
-              leading: CircleAvatar(
-                backgroundColor: const Color(0xff130857),
-                child: Text(
-                  category['icon'] ?? '📚',
-                  style: const TextStyle(fontSize: 24),
+          return InkWell(
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => QuestionsScreen(
+                  categoryId: category['id'],
+                  categoryName: category['name'],
                 ),
               ),
-              title: Text(
-                category['name'] ?? '',
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
+            ),
+            onDoubleTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    AddCategoryScreen(category: category, isEdit: true),
+              ),
+            ).then((_) => loadCategories()),
+
+            onLongPress: () => deleteCategory(category['id']),
+            child: Card(
+              margin: const EdgeInsets.only(bottom: 12),
+              elevation: 2,
+              child: ListTile(
+                contentPadding: const EdgeInsets.all(16),
+                leading: CircleAvatar(
+                  backgroundColor: const Color(0xff130857),
+                  child: Text(
+                    category['icon'] ?? '📚',
+                    style: const TextStyle(fontSize: 24),
+                  ),
                 ),
-              ),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 4),
-                  Text(category['description'] ?? ''),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Savollar: ${category['questionCount'] ?? 0}',
-                    style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                title: Text(
+                  category['name'] ?? '',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
                   ),
-                ],
-              ),
-              trailing: PopupMenuButton(
-                icon: const Icon(Icons.more_vert),
-                itemBuilder: (context) => [
-                  const PopupMenuItem(
-                    value: 'questions',
-                    child: Row(
-                      children: [
-                        Icon(Icons.question_answer, size: 20),
-                        SizedBox(width: 8),
-                        Text('Savollar'),
-                      ],
-                    ),
-                  ),
-                  const PopupMenuItem(
-                    value: 'edit',
-                    child: Row(
-                      children: [
-                        Icon(Icons.edit, size: 20),
-                        SizedBox(width: 8),
-                        Text('Tahrirlash'),
-                      ],
-                    ),
-                  ),
-                  const PopupMenuItem(
-                    value: 'delete',
-                    child: Row(
-                      children: [
-                        Icon(Icons.delete, size: 20, color: Colors.red),
-                        SizedBox(width: 8),
-                        Text('O\'chirish', style: TextStyle(color: Colors.red)),
-                      ],
-                    ),
-                  ),
-                ],
-                onSelected: (value) {
-                  if (value == 'questions') {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => QuestionsScreen(
-                          categoryId: category['id'],
-                          categoryName: category['name'],
-                        ),
-                      ),
-                    );
-                  } else if (value == 'edit') {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            AddCategoryScreen(category: category, isEdit: true),
-                      ),
-                    ).then((_) => loadCategories());
-                  } else if (value == 'delete') {
-                    deleteCategory(category['id']);
-                  }
-                },
+                ),
+                subtitle: category['description'].isNotEmpty
+                    ? Text(category['description'])
+                    : null,
               ),
             ),
           );

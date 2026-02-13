@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 
 class ApiServiceAdmin {
-  static const String baseUrl = 'https://quiz.monebakeryuz.uz';
+  static const String baseUrl = 'http://139.99.61.222:8050';
 
   // Kategoriyalar
   static Future<Map<String, dynamic>> createCategory(
@@ -116,8 +118,9 @@ class ApiServiceAdmin {
     String categoryId,
     String question,
     List<String> options,
-    String correctAnswer,
-  ) async {
+    String correctAnswer, {
+    String? imageUrl, // ← YANGI
+  }) async {
     final response = await http.put(
       Uri.parse('$baseUrl/api/questions/$questionId'),
       headers: {
@@ -129,6 +132,7 @@ class ApiServiceAdmin {
         'question': question,
         'options': options,
         'correctAnswer': correctAnswer,
+        if (imageUrl != null) 'imageUrl': imageUrl, // ← YANGI
       }),
     );
 
@@ -160,8 +164,9 @@ class ApiServiceAdmin {
     String categoryId,
     String question,
     List<String> options,
-    String correctAnswer,
-  ) async {
+    String correctAnswer, {
+    String? imageUrl, // ← YANGI
+  }) async {
     final response = await http.post(
       Uri.parse('$baseUrl/api/questions/single'),
       headers: {
@@ -173,6 +178,8 @@ class ApiServiceAdmin {
         'question': question,
         'options': options,
         'correctAnswer': correctAnswer,
+        if (imageUrl != null && imageUrl.isNotEmpty)
+          'imageUrl': imageUrl, // ← YANGI
       }),
     );
 
@@ -301,6 +308,131 @@ class ApiServiceAdmin {
       return jsonDecode(utf8.decode(response.bodyBytes));
     } else {
       throw Exception('Foydalanuvchi o\'chirilmadi');
+    }
+  }
+
+  // =====================
+  // RASMLAR (IMAGES)
+  // =====================
+
+  /// Rasm yuklash
+  static Future<Map<String, dynamic>> uploadImage(
+    String token,
+    File imageFile,
+  ) async {
+    try {
+      var request = http.MultipartRequest(
+        'POST',
+        Uri.parse('$baseUrl/api/images/upload'),
+      );
+
+      // Headers
+      request.headers['Authorization'] = 'Bearer $token';
+
+      // Fayl qo'shish
+      String fileName = imageFile.path.split('/').last;
+      String fileExtension = fileName.split('.').last.toLowerCase();
+
+      // Content type aniqlash
+      String contentType = 'image/jpeg';
+      if (fileExtension == 'png') {
+        contentType = 'image/png';
+      } else if (fileExtension == 'gif') {
+        contentType = 'image/gif';
+      } else if (fileExtension == 'webp') {
+        contentType = 'image/webp';
+      }
+
+      request.files.add(
+        await http.MultipartFile.fromPath(
+          'file',
+          imageFile.path,
+          contentType: MediaType.parse(contentType),
+        ),
+      );
+
+      // Yuborish
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(utf8.decode(response.bodyBytes));
+        // URL ni to'liq qilish
+        if (data['url'] != null && !data['url'].startsWith('http')) {
+          data['url'] = '$baseUrl${data['url']}';
+        }
+        return data;
+      } else {
+        throw Exception('Rasm yuklanmadi: ${response.body}');
+      }
+    } catch (e) {
+      throw Exception('Rasm yuklashda xatolik: $e');
+    }
+  }
+
+  /// Rasmlar ro'yxati
+  static Future<List<Map<String, dynamic>>> getImages(String token) async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/api/images'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(utf8.decode(response.bodyBytes));
+      final images = List<Map<String, dynamic>>.from(data['images'] ?? []);
+
+      // URL larni to'liq qilish
+      for (var image in images) {
+        if (image['url'] != null && !image['url'].startsWith('http')) {
+          image['url'] = '$baseUrl${image['url']}';
+        }
+      }
+
+      return images;
+    } else {
+      throw Exception('Rasmlar yuklanmadi');
+    }
+  }
+
+  /// Rasm tafsilotlari
+  static Future<Map<String, dynamic>> getImageDetail(
+    String token,
+    String imageId,
+  ) async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/api/images/$imageId'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(utf8.decode(response.bodyBytes));
+      final image = data['image'];
+
+      // URL ni to'liq qilish
+      if (image['url'] != null && !image['url'].startsWith('http')) {
+        image['url'] = '$baseUrl${image['url']}';
+      }
+
+      return image;
+    } else {
+      throw Exception('Rasm topilmadi');
+    }
+  }
+
+  /// Rasmni o'chirish
+  static Future<Map<String, dynamic>> deleteImage(
+    String token,
+    String imageId,
+  ) async {
+    final response = await http.delete(
+      Uri.parse('$baseUrl/api/images/$imageId'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(utf8.decode(response.bodyBytes));
+    } else {
+      throw Exception('Rasm o\'chirilmadi');
     }
   }
 }

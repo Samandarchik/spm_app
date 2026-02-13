@@ -1,0 +1,319 @@
+
+{
+  "questions": [
+    {
+      "id": "2e878c92-b6f1-45e2-a10a-5d7f1006c641",
+      "question": "Qaysi birikmada ion bog’lanish mavjud emas?",
+      "options": [
+        "Ba(NO3)2",
+        "Na3PO4",
+        "KCl",
+        "H2O"
+      ]
+    },
+    {
+      "id": "f8631fe4-4e69-4516-af60-f59db8f8c794",
+      "question": "Kislorodning tashqi elektron qavatida nechta elektron bor?",
+      "options": [
+        "2",
+        "6",
+        "3",
+        "5"
+      ]
+    },
+    {
+      "id": "381db359-dcab-4789-a9ad-2ef3c985e5ce",
+      "question": "14 g azot va 64 g kisloroddan iborat aralashmaning miqdorini (mol) aniqlang.",
+      "options": [
+        "3",
+        "2",
+        "2,5",
+        "4"
+      ]
+    },
+    {
+      "id": "02a444c3-5e11-4243-8f8a-62b8eb53d106",
+      "question": "Quyidagi holatlarning qaysilari noto‘g‘ri?\n1) fizik hodisalar kimyoviv hodisalardar farq qilib, fizik hodisalarda molekulalar saqlanib qolmaydi;\n2) molekulalar atomlardan tashkil topgan;\n3) molekula moddaning fizik xossalarini o‘zida saqlovchi eng kichik zarrachadir;\n4) kirnyoviy hodisalarda molekulaning kimyoviv tarkibi o‘zgaradi;\n5) molekulalar ortasida o'zaro tortilish va itarilish kuchlari mavjud.",
+      "options": [
+        "1, 4",
+        "1, 2, 3",
+        "2, 4, 5",
+        "1, 3"
+      ]
+    },
+    {
+      "id": "80d79573-7e26-46d5-99a2-b015144788e2",
+      "question": "Magnetit formulasini aniqlang.",
+      "options": [
+        "FeS2",
+        "FeCO3",
+        "Fe3O4",
+        "Fe2O3"
+      ]
+    },
+    {
+      "id": "48b7d574-c9c6-49ff-997c-5a081aa354d8",
+      "question": "Tarkibida 0,3∙NA ta vodorod atomi saqlagan ammiak hajmini (l, n.sh.) aniqlang.",
+      "options": [
+        "4,48",
+        "2,24",
+        "6,72",
+        "8,96"
+      ]
+    },
+    {
+      "id": "f80e3a49-683c-47f4-9c72-a97202ff70f1",
+      "question": "Quyidagi guruh (sinf)larga mos moddalarning formulasini toping. 1) o‘rta tuz; 2) suvda eriydigan asos.",
+      "options": [
+        "1 - Cs2Se; 2 - LiBr",
+        "1 - CaS; 2 – KOH",
+        "1 - BaS; 2 - Cu(OH)2",
+        "1 - FeO; 2 – LiOH"
+      ]
+    },
+    {
+      "id": "5077c1de-f29d-42c3-b88b-753941ec2dca",
+      "question": "SO2 + О2 SO3 reaksiyada SO3 ning konsentratsiyasi 2 mol/1 bo`lganda kimyoviy muvozanat qaror topdi.  SO2 ning boshlang`ich konsentratsiyasi 3 mol/1 bolsa. kislorodning muvozanat holatidagi konsentratsiyasini (mol/1) hisoblang (KM=1).",
+      "options": [
+        "1",
+        "4",
+        "2",
+        "5"
+      ]
+    },
+    {
+      "id": "ec54312f-67f3-41e9-94c3-d49465754af3",
+      "question": "16 litr idishdagi gazning hajmi 8 litrgacha kamaytirilganda bosim 6 kPa ga ortdi. Dastlabki bosimni (kPa) aniqlang. (T = const)",
+      "options": [
+        "4",
+        "10",
+        "6",
+        "8"
+      ]
+    },
+    {
+      "id": "c8bf28d6-a62f-492a-a625-0a6634314042",
+      "question": "Xlorid kislotaning 1 • 10-8 M li eritmasida pH qiymatini aniqlang.",
+      "options": [
+        "6",
+        "8",
+        "7",
+        "6,96"
+      ]
+    },
+    {
+      "id": "69b1cc0b-a69a-407b-b5f5-ec64365d1967",
+      "question": "Tarkibida to‘rt mol kislorod atomlari saqlovchi sulfat kislota massasini (g) aniqlang.",
+      "options": [
+        "98",
+        "196",
+        "43",
+        "392"
+      ]
+    },
+    {
+      "id": "301e5526-ac8b-4fc0-8a03-85712a48c3e8",
+      "question": "2020 g kaliy nitrat eritmasida 4 mol tuz bo`lsa, eritmaning foiz konsentratsiyasini (%) aniqlang.",
+      "options": [
+        "15",
+        "10",
+        "25",
+        "20"
+      ]
+    },
+    {
+      "id": "b1aceedb-4d62-4b8e-beb1-9587a4b74dce",
+      "question": "Qaysi tuzning dissotsiatsiyalanishidan olingan ionlar soni dissotsiatsiyalangan tuzning atomlar sonidan ikki marta kam? (Suvning dissotsiatsiyalanishi hisobga olinmasin.)",
+      "options": [
+        "KNO3",
+        "CaCl2",
+        "Al2(SO4)3",
+        "Na3PO4"
+      ]
+    },
+    {
+      "id": "ef6709db-5187-4b17-af9b-38da93819207",
+      "question": "Ca(OH)2 va HCl reaksiyasi natijasida jami necha xil tuz hosil bo‘lishi mumkin?",
+      "options": [
+        "4",
+        "2",
+        "5",
+        "6"
+      ]
+    },
+    {
+      "id": "68069dac-a4d7-49fd-af97-be39c11538e5",
+      "question": "Qaysi modda ion kristall panjaraga ega?",
+      "options": [
+        "Yod",
+        "Osh tuzi",
+        "Olmos",
+        "Temir"
+      ]
+    },
+    {
+      "id": "bc2da51b-e5a1-4174-8fde-975908c457a9",
+      "question": "Suvning formulasini toping?",
+      "options": [
+        "D2O",
+        "He2O",
+        "HO",
+        "H2O2"
+      ]
+    },
+    {
+      "id": "af15c6c6-f878-4b2a-91eb-991074f46dda",
+      "question": "Kumush nitrat eritmasiga noma’lum tuz eritmasi qo‘shilganda oq-pag’a cho‘kma tushdi va u vaqt o‘tishi bilan qoraydi. Noma’lum tuzni aniqlang.",
+      "options": [
+        "natriy xlorid",
+        "natriy fosfat",
+        "natriy yodid",
+        "natriy bromide"
+      ]
+    },
+    {
+      "id": "3c2e0b96-8408-40ba-9bb9-535714afded6",
+      "question": "50 g eritmaga qanday massadagi suv qo‘shilganda eritma konsentratsiyasi uch marta kamayadi?",
+      "options": [
+        "75",
+        "100",
+        "120",
+        "150"
+      ]
+    },
+    {
+      "id": "1909f00c-8a0a-4c11-bc6e-4051ad4c8b47",
+      "question": "Xrom(III) – digidroksosulfat molekulasidagi oltingugurt va xrom atomlari soni qanday nisbatda bo`ladi?",
+      "options": [
+        "1:3",
+        "1:1",
+        "2:3",
+        "1:2"
+      ]
+    },
+    {
+      "id": "6cd31959-d63c-4de2-929e-60d6245481e7",
+      "question": "Argentit formulasini aniqlang.",
+      "options": [
+        "CdS",
+        "Cu2S",
+        "HgS",
+        "Ag2S"
+      ]
+    },
+    {
+      "id": "96636e14-e738-4528-9468-5ab784aeefbf",
+      "question": "Na2SO4  dissotsiatsiyalanishi natijasida zarrachalar soni 2,6 marta ortgan  bo`lsa, dissotsiatsiyalanish darajasini (%) aniqlang. (Suv zarrachalari va uning dissotsiatsiyalanishi hisobga olinmasin.)",
+      "options": [
+        "80",
+        "50",
+        "60",
+        "70"
+      ]
+    },
+    {
+      "id": "102dc8f6-90fe-456b-bd3d-a331e56fc1d9",
+      "question": "Qaysi metall nitrati\nMe(NO3)3 Me2O3 + NO2 + O2\nreaksiya bo‘yicha termik parchalanishga uchraydi?",
+      "options": [
+        "Al",
+        "Ba",
+        "Ag",
+        "Ca"
+      ]
+    },
+    {
+      "id": "39e76233-c49d-4f4b-a2ac-dc420ee734db",
+      "question": "A va В atomlaridan hosil bo‘lgan A2B3 va A2B5 birikmalarini 0,01 moldan olinganda massalari mos ravishda 1,1 g va 1,42 g bo‘lsa, A va В ning nisbiy atom massalarini aniqlang.",
+      "options": [
+        "A = 31; В = 32",
+        "A = 31; В = 16",
+        "A = 16; В = 31",
+        "A = 62; В = 16"
+      ]
+    },
+    {
+      "id": "8ce15923-af13-4b96-94eb-6afcdabff700",
+      "question": "buyer qayer",
+      "options": [
+        "a",
+        "a",
+        "ad",
+        "a"
+      ]
+    },
+    {
+      "id": "048a0fa6-97d6-44ff-ac26-41f45961b4d7",
+      "question": "2 mol noma’lum alkan kislorodda to‘liq yondirildi. Bu jarayonda oksidlovchi qaytaruvchidan 88∙NA ta elektron olgan bo`sa , alkanni aniqlang.",
+      "options": [
+        "oktan",
+        "geptan",
+        "geksan",
+        "pentan"
+      ]
+    },
+    {
+      "id": "eb4d1810-6485-4a43-a790-97fd8657915e",
+      "question": "Na2SO4 tarkibida ion bog’lanish qaysi atomlar o‘rtasida yuzaga keladi?",
+      "options": [
+        "Kislorod va kislorod",
+        "Natriy va kislorod",
+        "Natriy va oltingugurt",
+        "Oltingugurt va kislorod"
+      ]
+    },
+    {
+      "id": "7e953286-8e91-4706-9680-e829d2ba3dea",
+      "question": "Cr3+ kationidagi toq elektronlar soni Fe2+ kationidagi toq elektronlar sonidan nechtaga kam?",
+      "options": [
+        "3",
+        "1",
+        "4",
+        "2"
+      ]
+    },
+    {
+      "id": "023887f2-0cfb-4b4a-a362-88ad52d18c17",
+      "question": "Quyidagi moddalardan qaysilarining tarkibida 2,5∙NA ta kislorod atomi bo‘ladi?\n1) 49 g H2SO4 ;​​2) 31,5 g HNO3; ​3) 54 g N2O5; 4) 1 mol HOCN ; ​5) 27 g H2O,​​6) 1,25 mol CO2.",
+      "options": [
+        "1, 2",
+        "3, 6",
+        "2, 5",
+        "1, 4"
+      ]
+    },
+    {
+      "id": "6a8b5c8c-c6f5-48be-8b2d-6d86150d2345",
+      "question": "0,5 mol moddaning og‘irligi 71 g ga teng bodsa, ushbu moddaning molar massasini (g/mol) aniqlang.",
+      "options": [
+        "100",
+        "142",
+        "74",
+        "37"
+      ]
+    },
+    {
+      "id": "272769e0-60a6-4974-8140-255fd8d81bad",
+      "question": "II valentli metall sulfidi tarkibida oltingugurt bilan met alining massa nisbatlari 1:2 bo‘lsa, noma’lum metallni aniqlang.",
+      "options": [
+        "Cr",
+        "Hg",
+        "Cu",
+        "Fe"
+      ]
+    },
+    {
+      "id": "006a70e3-31ed-4d2a-bcd1-9b5bd8a2abe6",
+      "question": "Quyidagilardan qaysi biri kimyoviy hodisa emas?",
+      "options": [
+        "Temirning zanglashi",
+        "Suvni elektroliz qilish",
+        "Suv bug'larini kondensatlash",
+        "Malaxitning parchalanishi"
+      ]
+    }
+  ],
+  "total": 31,
+  "categoryId": "fd0e47a4-618f-4a2b-aaee-5190c3175ac8",
+  "categoryName": "Kimyo uzb",
+  "userRole": "super_admin"
+}

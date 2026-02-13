@@ -19,20 +19,13 @@ class _RegisterUiState extends State<RegisterUi> {
   bool _obscurePassword = true;
 
   Future<void> _register() async {
-    if (_usernameController.text.isEmpty || _passwordController.text.isEmpty) {
-      setState(() {
-        _errorMessage = 'Iltimos, barcha maydonlarni to\'ldiring';
-      });
-      return;
-    }
-
     setState(() {
       _isLoading = true;
       _errorMessage = null;
     });
 
     try {
-      final response = await ApiService.login("test", "test12");
+      final response = await ApiService.login("Test", "test12");
       await StorageService.saveToken(response['access_token']);
       if (!mounted) return;
       response["user"]['role'] == "super_admin"
@@ -190,7 +183,7 @@ class _RegisterUiState extends State<RegisterUi> {
                                 ),
                               )
                             : const Text(
-                                'Register',
+                                'Try Login',
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,

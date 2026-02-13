@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:spm_app/main/models/category.dart';
 import 'package:spm_app/main/models/question.dart';
@@ -206,7 +207,8 @@ class _QuizScreenState extends State<QuizScreen> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 8),
+
                     ClipRRect(
                       borderRadius: BorderRadius.circular(8),
                       child: LinearProgressIndicator(
@@ -218,6 +220,14 @@ class _QuizScreenState extends State<QuizScreen> {
                         ),
                       ),
                     ),
+                    const SizedBox(height: 8),
+
+                    if (question.imageUrl != null)
+                      ClipRRect(
+                        borderRadius: BorderRadiusGeometry.circular(10),
+                        child: CachedNetworkImage(imageUrl: question.imageUrl!),
+                      ),
+
                     const SizedBox(height: 32),
                     Text(
                       question.question,

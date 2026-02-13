@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:spm_app/main/service/storage_service.dart';
 import 'package:spm_app/main/super_admin/admin_api_service.dart';
 
@@ -31,6 +33,9 @@ class _AddQuestionScreenState extends State<AddQuestionScreen> {
   ];
   int _correctAnswerIndex = 0;
   bool _isLoading = false;
+  File? _selectedImage;
+  String? _uploadedImageUrl;
+  final ImagePicker _picker = ImagePicker();
 
   @override
   void initState() {
@@ -41,9 +46,120 @@ class _AddQuestionScreenState extends State<AddQuestionScreen> {
       for (int i = 0; i < options.length && i < 4; i++) {
         _optionControllers[i].text = options[i];
       }
-      // final correctAnswer = widget.question!['correctAnswer'];
-      // _correctAnswerIndex = options.indexOf(correctAnswer);
-      // if (_correctAnswerIndex < 0) _correctAnswerIndex = 0;
+
+      // Agar savolda rasm bo'lsa
+      if (widget.question!['imageUrl'] != null) {
+        _uploadedImageUrl = widget.question!['imageUrl'];
+      }
+    }
+  }
+
+  /// Galereyadan rasm tanlash
+  Future<void> _pickImageFromGallery() async {
+    try {
+      final XFile? image = await _picker.pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 1920,
+        maxHeight: 1080,
+        imageQuality: 85,
+      );
+
+      if (image != null) {
+        setState(() {
+          _selectedImage = File(image.path);
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Rasm tanlanmadi: $e')));
+      }
+    }
+  }
+
+  /// Kameradan rasm olish
+  Future<void> _pickImageFromCamera() async {
+    try {
+      final XFile? image = await _picker.pickImage(
+        source: ImageSource.camera,
+        maxWidth: 1920,
+        maxHeight: 1080,
+        imageQuality: 85,
+      );
+
+      if (image != null) {
+        setState(() {
+          _selectedImage = File(image.path);
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Rasm olinmadi: $e')));
+      }
+    }
+  }
+
+  /// Rasm tanlash dialog
+  void _showImagePickerDialog() {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => SafeArea(
+        child: Wrap(
+          children: [
+            ListTile(
+              leading: const Icon(Icons.photo_library),
+              title: const Text('Galereyadan tanlash'),
+              onTap: () {
+                Navigator.pop(context);
+                _pickImageFromGallery();
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.camera_alt),
+              title: const Text('Kameradan olish'),
+              onTap: () {
+                Navigator.pop(context);
+                _pickImageFromCamera();
+              },
+            ),
+            if (_selectedImage != null || _uploadedImageUrl != null)
+              ListTile(
+                leading: const Icon(Icons.delete, color: Colors.red),
+                title: const Text(
+                  'Rasmni o\'chirish',
+                  style: TextStyle(color: Colors.red),
+                ),
+                onTap: () {
+                  Navigator.pop(context);
+                  setState(() {
+                    _selectedImage = null;
+                    _uploadedImageUrl = null;
+                  });
+                },
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Rasmni serverga yuklash
+  Future<String?> _uploadImage(String token) async {
+    if (_selectedImage == null) return _uploadedImageUrl;
+
+    try {
+      final result = await ApiServiceAdmin.uploadImage(token, _selectedImage!);
+      return result['url'];
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Rasm yuklanmadi: $e')));
+      }
+      return null;
     }
   }
 
@@ -65,17 +181,31 @@ class _AddQuestionScreenState extends State<AddQuestionScreen> {
     try {
       final token = await StorageService.getToken();
       if (token != null) {
+        // Rasmni yuklash (agar yangi rasm tanlangan bo'lsa)
+        String? imageUrl;
+        if (_selectedImage != null) {
+          imageUrl = await _uploadImage(token);
+          if (imageUrl == null) {
+            setState(() => _isLoading = false);
+            return;
+          }
+        } else {
+          imageUrl = _uploadedImageUrl;
+        }
+
         final options = _optionControllers.map((c) => c.text.trim()).toList();
         final correctAnswer = options[_correctAnswerIndex];
+        String questionText = _questionController.text.trim();
 
         if (widget.isEdit) {
           await ApiServiceAdmin.updateQuestion(
             token,
             widget.question!['id'],
             widget.categoryId,
-            _questionController.text.trim(),
+            questionText,
             options,
             correctAnswer,
+            imageUrl: imageUrl, // ← YANGI
           );
           if (mounted) {
             ScaffoldMessenger.of(
@@ -86,9 +216,10 @@ class _AddQuestionScreenState extends State<AddQuestionScreen> {
           await ApiServiceAdmin.addSingleQuestion(
             token,
             widget.categoryId,
-            _questionController.text.trim(),
+            questionText,
             options,
             correctAnswer,
+            imageUrl: imageUrl, // ← YANGI
           );
           if (mounted) {
             ScaffoldMessenger.of(
@@ -136,6 +267,111 @@ class _AddQuestionScreenState extends State<AddQuestionScreen> {
                 ),
               ),
               const SizedBox(height: 16),
+
+              // RASM QISMI
+              Card(
+                elevation: 2,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.image, color: Color(0xff130857)),
+                          const SizedBox(width: 8),
+                          const Text(
+                            'Savol uchun rasm',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const Spacer(),
+                          TextButton.icon(
+                            onPressed: _showImagePickerDialog,
+                            icon: Icon(
+                              _selectedImage != null ||
+                                      _uploadedImageUrl != null
+                                  ? Icons.edit
+                                  : Icons.add_photo_alternate,
+                            ),
+                            label: Text(
+                              _selectedImage != null ||
+                                      _uploadedImageUrl != null
+                                  ? 'O\'zgartirish'
+                                  : 'Qo\'shish',
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    if (_selectedImage != null || _uploadedImageUrl != null)
+                      Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: _selectedImage != null
+                              ? Image.file(
+                                  _selectedImage!,
+                                  height: 200,
+                                  width: double.infinity,
+                                  fit: BoxFit.cover,
+                                )
+                              : _uploadedImageUrl != null
+                              ? Image.network(
+                                  _uploadedImageUrl!,
+                                  height: 200,
+                                  width: double.infinity,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stack) {
+                                    return Container(
+                                      height: 200,
+                                      color: Colors.grey[300],
+                                      child: const Center(
+                                        child: Icon(
+                                          Icons.broken_image,
+                                          size: 50,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                )
+                              : const SizedBox(),
+                        ),
+                      ),
+                    if (_selectedImage == null && _uploadedImageUrl == null)
+                      Container(
+                        height: 120,
+                        margin: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[200],
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: Colors.grey[400]!),
+                        ),
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.image_outlined,
+                                size: 40,
+                                color: Colors.grey[600],
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'Rasm qo\'shilmagan',
+                                style: TextStyle(color: Colors.grey[600]),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+
               TextFormField(
                 controller: _questionController,
                 decoration: const InputDecoration(
@@ -193,31 +429,7 @@ class _AddQuestionScreenState extends State<AddQuestionScreen> {
                   ),
                 );
               }),
-              const SizedBox(height: 8),
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.blue[50],
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.blue[200]!),
-                ),
-                child: Row(
-                  children: [
-                    const Icon(
-                      Icons.info_outline,
-                      color: Colors.blue,
-                      size: 20,
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        'To\'g\'ri javobni belgilash uchun radio tugmasini bosing',
-                        style: TextStyle(color: Colors.blue[800], fontSize: 12),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+
               const SizedBox(height: 24),
               SizedBox(
                 width: double.infinity,
