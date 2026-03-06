@@ -25,7 +25,7 @@ class _RegisterUiState extends State<RegisterUi> {
     });
 
     try {
-      final response = await ApiService.login("Test", "test12");
+      final response = await ApiService.login("Test", "test123");
       await StorageService.saveToken(response['access_token']);
       if (!mounted) return;
       response["user"]['role'] == "super_admin"

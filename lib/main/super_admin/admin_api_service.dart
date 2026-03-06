@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 
 class ApiServiceAdmin {
-  static const String baseUrl = 'http://139.99.61.222:8050';
+  static const String baseUrl = 'https://quiz.spm.uz';
 
   // Kategoriyalar
   static Future<Map<String, dynamic>> createCategory(
@@ -287,7 +287,6 @@ class ApiServiceAdmin {
         'role': role,
       }),
     );
-
     if (response.statusCode == 200 || response.statusCode == 201) {
       return jsonDecode(utf8.decode(response.bodyBytes));
     } else {
